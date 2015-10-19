@@ -78,3 +78,8 @@ gen-external-apklibs
 # log file #
 ############
 *.log
+
+########
+# node #
+########
+npm-debug.log
