@@ -2,7 +2,6 @@ var express = require('express');
 var pg = require('pg');
 var bodyParser = require('body-parser');
 var path = require('path');
-var database = require('../model/database.js')
 var router = express.Router();
 var jsonParser = bodyParser.json();
 var connectionString = process.env.DATABASE_URL;
@@ -11,7 +10,6 @@ var connectionString = process.env.DATABASE_URL;
 router.get('/', function(req, res, next) {
   // console.log('asdasdadas', path.join(__dirname, '../', '../', 'config'));
   // res.render('index', { title: 'Express' });
-  database;
   res.sendFile(path.join(__dirname, '../', 'views', 'index.html'));
 });
 
@@ -132,6 +130,116 @@ router.post('/api/v1/test/json', jsonParser, function (req, res) {
 
 router.get('/backlog', function(req, res, next) {
   res.sendFile(path.join(__dirname, '../', 'views', 'backlog.html'));
+});
+
+router.get('/api/v1/read/user', function(req, res) {
+  var results = [];
+
+  pg.connect(connectionString, function(err, client, done) {
+    if (err) {
+      done();
+      console.error(err);
+      return res.status(500).json({success: false, data: err});
+    }
+
+    var query = client.query("SELECT * FROM EX_USER ORDER BY EX_NAME ASC;");
+    query.on('row', function(row) {
+      results.push(row)
+    });
+
+    query.on('end', function() {
+      done();
+      return res.json(results);
+    });
+  });
+});
+
+router.post('/api/v1/create/user', jsonParser, function(req, res) {
+  var results = [];
+
+  pg.connect(connectionString, function(err, client, done) {
+    if (err) {
+      done();
+      console.error(err);
+      return res.status(500).json({success: false, error: err});
+    }
+
+    client.query("INSERT INTO EX_USER(EX_ID_USER, EX_ID_NO, EX_NAME, EX_EMAIL, EX_PHONE) VALUES($1, $2, $3, $4, $5)",
+    [req.body.idUser, req.body.idNo, req.body.name, req.body.email, req.body.phone], function(err) {
+      if (err) {
+        console.error('could not insert data', err);
+        return res.json({success: false, error: err});
+      }
+    });
+
+    var query = client.query("SELECT * FROM EX_USER");
+    query.on('row', function(row) {
+      results.push(row);
+    query.on('end', function() {
+    });
+      done();
+      return res.json(results);
+    });
+  });
+});
+
+router.put('/api/v1/update/user', function(req, res) {
+  var results = [];
+
+  pg.connect(connectionString, function(err, client, done) {
+    if (err) {
+      done();
+      console.error('update data failed', err);
+      return res.status(500).send(json({success: false, error: err}));
+    }
+
+    client.query("UPDATE EX_USER SET EX_ID_NO=($2), EX_NAME=($3), EX_EMAIL=($4), EX_PHONE=($5) WHERE EX_ID_USER=($1)",
+    [req.body.idUser, req.body.idNo, req.body.name, req.body.email, req.body.phone], function(err) {
+      if (err) {
+        done();
+        console.error('update data failed', err);
+        return res.status(500).send(json({success: false, error: err}));
+      }
+    });
+
+    var query = client.query("SELECT * FROM EX_USER");
+    query.on('row', function(row) {
+      results.push(row);
+    });
+    query.on('end', function() {
+      done();
+      return res.json(results);
+    });
+  });
+});
+
+router.delete('/api/v1/delete/user/:ex_id_user', function(req, res) {
+  var results = [];
+  var id = req.params.ex_id_user;
+
+  pg.connect(connectionString, function(err, client, done) {
+    if (err) {
+      done();
+      console.error('delete data failed', err);
+      return res.status(500).json({success: false, error: err});
+    }
+
+    client.query("DELETE FROM EX_USER WHERE EX_ID_USER=($1)", [id], function(err) {
+      if (err) {
+        console.error('delete data failed', err);
+        return res.status(500).json({success: false, errpr: err});
+      }
+
+      var query = client.query("SELECT * FROM EX_USER");
+      query.on('row', function(row) {
+        results.push(row);
+      });
+      query.on('end', function() {
+        done();
+        return res.json(results);
+      });
+    });
+  });
 });
 
 module.exports = router;

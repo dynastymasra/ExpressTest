@@ -8,8 +8,6 @@ describe('Connection', function() {
     done();
   })
 
-
-  
   // it('respond with matching records', function() {
   //   return db.find({ type: 'User' }).should.eventually.have.length(3);
   // });
