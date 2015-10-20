@@ -2,6 +2,7 @@ var express = require('express');
 var pg = require('pg');
 var bodyParser = require('body-parser');
 var path = require('path');
+var database = require('../model/database.js')
 var router = express.Router();
 var jsonParser = bodyParser.json();
 var connectionString = process.env.DATABASE_URL;
@@ -10,10 +11,11 @@ var connectionString = process.env.DATABASE_URL;
 router.get('/', function(req, res, next) {
   // console.log('asdasdadas', path.join(__dirname, '../', '../', 'config'));
   // res.render('index', { title: 'Express' });
+  database;
   res.sendFile(path.join(__dirname, '../', 'views', 'index.html'));
 });
 
-router.get('/api/v1/read', function(req, res) {
+router.get('/api/v1/read/todo', function(req, res) {
   var results = [];
 
   pg.connect(connectionString, function(err, client, done) {
@@ -35,7 +37,7 @@ router.get('/api/v1/read', function(req, res) {
   });
 });
 
-router.post('/api/v1/create', jsonParser, function(req, res) {
+router.post('/api/v1/create/todo', jsonParser, function(req, res) {
   var results = [];
 
   pg.connect(connectionString, function(err, client, done) {
@@ -46,7 +48,7 @@ router.post('/api/v1/create', jsonParser, function(req, res) {
     }
 
     client.query("INSERT INTO EX_PRAC(EX_ID, EX_TITLE, EX_DESC, EX_TO_DO, EX_PROGRESS, EX_DONE) VALUES($1, $2, $3, $4, $5, $6)",
-    [req.body.id, req.body.title, req.body.desc, req.body.todo, req.body.progress, req.body.done], function(err) {
+    [req.body.id, req.body.title, req.body.description, req.body.todo, req.body.progress, req.body.done], function(err) {
       if (err) {
         console.error('could not insert data', err);
         return res.json({success: false, error: err});
@@ -94,7 +96,7 @@ router.put('/api/v1/update', function(req, res) {
   });
 });
 
-router.delete('/api/v1/delete/:ex_id', function(req, res) {
+router.delete('/api/v1/delete/todo/:ex_id', function(req, res) {
   var results = [];
   var id = req.params.ex_id;
 
@@ -126,6 +128,10 @@ router.delete('/api/v1/delete/:ex_id', function(req, res) {
 router.post('/api/v1/test/json', jsonParser, function (req, res) {
   if (!req.body) return res.status(400).json({success: false, error: err});
   res.json({"value": req.body});
+});
+
+router.get('/backlog', function(req, res, next) {
+  res.sendFile(path.join(__dirname, '../', 'views', 'backlog.html'));
 });
 
 module.exports = router;
