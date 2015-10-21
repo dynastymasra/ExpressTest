@@ -62,7 +62,7 @@
               <table class="pure-table pure-table-horizontal">
                   <thead>
                       <tr>
-                          <th align="center">ID</th>
+                          <th align="center">No</th>
                           <th align="center">ID No</th>
                           <th align="center">Name</th>
                           <th align="center">Email</th>
@@ -72,13 +72,13 @@
                   </thead>
                   <tbody>
                       <tr ng-repeat="x in userData">
-                          <td align="center">{{x.ex_id_user}}</td>
-                          <td>{{x.ex_id_no}}</td>
-                          <td>{{x.ex_name}}</td>
-                          <td align="center">{{x.ex_email}}</td>
-                          <td align="center">{{x.ex_phone}}</td>
+                          <td align="center">{{$index + 1}}</td>
+                          <td>{{x.user_no}}</td>
+                          <td>{{x.user_name}}</td>
+                          <td align="center">{{x.user_email}}</td>
+                          <td align="center">{{x.user_phone}}</td>
                           <td align="center">
-                            <button class="button-error pure-button" ng-click="deleteUser(x.ex_id_user)"><i class="fa fa-trash-o"></i></button>
+                            <button class="button-error pure-button" ng-click="deleteUser(x.user_id)"><i class="fa fa-trash-o"></i></button>
                           </td>
                       </tr>
                   </tbody>

@@ -7,9 +7,7 @@ angular.module('expressnode', []).controller('mainController', function($scope, 
         id: $scope.id,
         title: $scope.title,
         description: $scope.desc,
-        todo: true,
-        progress: false,
-        done: false
+        status: "Backlog"
       }
       $http.post("/api/v1/create/todo", data).success(function(data, status) {
           $scope.todoData = data;

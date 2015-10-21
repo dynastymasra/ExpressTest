@@ -56,25 +56,21 @@
               <table class="pure-table pure-table-horizontal">
                   <thead>
                       <tr>
-                          <th align="center">ID</th>
+                          <th align="center">No</th>
                           <th align="center">Title</th>
                           <th align="center">Description</th>
-                          <th align="center">Todo</th>
-                          <th align="center">Progress</th>
-                          <th align="center">Done</th>
-                          <th align="center">Action</th>
+                          <th align="center">Status</th>
+                          <th align="center">Delete</th>
                       </tr>
                   </thead>
                   <tbody>
                       <tr ng-repeat="x in todoData">
-                          <td align="center">{{x.ex_id}}</td>
-                          <td>{{x.ex_title}}</td>
-                          <td>{{x.ex_desc}}</td>
-                          <td align="center">{{x.ex_to_do}}</td>
-                          <td align="center">{{x.ex_progress}}</td>
-                          <td align="center">{{x.ex_done}}</td>
+                          <td align="center">{{$index + 1}}</td>
+                          <td>{{x.prac_title}}</td>
+                          <td>{{x.prac_desc}}</td>
+                          <td align="center">{{x.prac_status}}</td>
                           <td align="center">
-                            <button class="button-error pure-button" ng-click="deleteTodo(x.ex_id)"><i class="fa fa-trash-o"></i></button>    
+                            <button class="button-error pure-button" ng-click="deleteTodo(x.prac_id)"><i class="fa fa-trash-o"></i></button>
                           </td>
                       </tr>
                   </tbody>

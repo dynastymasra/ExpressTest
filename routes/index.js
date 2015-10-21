@@ -23,7 +23,7 @@ router.get('/api/v1/read/todo', function(req, res) {
       return res.status(500).json({success: false, data: err});
     }
 
-    var query = client.query("SELECT * FROM EX_PRAC;");
+    var query = client.query("SELECT * FROM EX_PRAC ORDER BY PRAC_TITLE ASC");
     query.on('row', function(row) {
       results.push(row)
     });
@@ -45,15 +45,15 @@ router.post('/api/v1/create/todo', jsonParser, function(req, res) {
       return res.status(500).json({success: false, error: err});
     }
 
-    client.query("INSERT INTO EX_PRAC(EX_ID, EX_TITLE, EX_DESC, EX_TO_DO, EX_PROGRESS, EX_DONE) VALUES($1, $2, $3, $4, $5, $6)",
-    [req.body.id, req.body.title, req.body.description, req.body.todo, req.body.progress, req.body.done], function(err) {
+    client.query("INSERT INTO EX_PRAC(PRAC_ID, PRAC_TITLE, PRAC_DESC, PRAC_STATUS) VALUES($1, $2, $3, $4)",
+    [req.body.id, req.body.title, req.body.description, req.body.status], function(err) {
       if (err) {
         console.error('could not insert data', err);
         return res.json({success: false, error: err});
       }
     });
 
-    var query = client.query("SELECT * FROM EX_PRAC");
+    var query = client.query("SELECT * FROM EX_PRAC ORDER BY PRAC_TITLE ASC");
     query.on('row', function(row) {
       results.push(row);
     });
@@ -74,8 +74,8 @@ router.put('/api/v1/update', function(req, res) {
       return res.status(500).send(json({success: false, error: err}));
     }
 
-    client.query("UPDATE EX_PRAC SET EX_TITLE=($2), EX_DESC=($3), EX_TO_DO=($4), EX_PROGRESS=($5), EX_DONE=($6) WHERE EX_ID=($1)",
-    [req.body.id, req.body.title, req.body.desc, req.body.todo, req.body.progress, req.body.done], function(err) {
+    client.query("UPDATE EX_PRAC SET PRAC_TITLE=($2), PRAC_DESC=($3), PRAC_STATUS=($4) WHERE PRAC_ID=($1)",
+    [req.body.id, req.body.title, req.body.desc, req.body.status], function(err) {
       if (err) {
         done();
         console.error('update data failed', err);
@@ -83,7 +83,7 @@ router.put('/api/v1/update', function(req, res) {
       }
     });
 
-    var query = client.query("SELECT * FROM EX_PRAC");
+    var query = client.query("SELECT * FROM EX_PRAC ORDER BY PRAC_TITLE ASC");
     query.on('row', function(row) {
       results.push(row);
     });
@@ -105,13 +105,13 @@ router.delete('/api/v1/delete/todo/:ex_id', function(req, res) {
       return res.status(500).json({success: false, error: err});
     }
 
-    client.query("DELETE FROM EX_PRAC WHERE EX_ID=($1)", [id], function(err) {
+    client.query("DELETE FROM EX_PRAC WHERE PRAC_ID=($1)", [id], function(err) {
       if (err) {
         console.error('delete data failed', err);
         return res.status(500).json({success: false, errpr: err});
       }
 
-      var query = client.query("SELECT * FROM EX_PRAC");
+      var query = client.query("SELECT * FROM EX_PRAC ORDER BY PRAC_TITLE ASC");
       query.on('row', function(row) {
         results.push(row);
       });
@@ -121,11 +121,6 @@ router.delete('/api/v1/delete/todo/:ex_id', function(req, res) {
       });
     });
   });
-});
-
-router.post('/api/v1/test/json', jsonParser, function (req, res) {
-  if (!req.body) return res.status(400).json({success: false, error: err});
-  res.json({"value": req.body});
 });
 
 router.get('/backlog', function(req, res, next) {
@@ -142,7 +137,7 @@ router.get('/api/v1/read/user', function(req, res) {
       return res.status(500).json({success: false, data: err});
     }
 
-    var query = client.query("SELECT * FROM EX_USER ORDER BY EX_NAME ASC;");
+    var query = client.query("SELECT * FROM EX_USER ORDER BY USER_NAME ASC;");
     query.on('row', function(row) {
       results.push(row)
     });
@@ -164,7 +159,7 @@ router.post('/api/v1/create/user', jsonParser, function(req, res) {
       return res.status(500).json({success: false, error: err});
     }
 
-    client.query("INSERT INTO EX_USER(EX_ID_USER, EX_ID_NO, EX_NAME, EX_EMAIL, EX_PHONE) VALUES($1, $2, $3, $4, $5)",
+    client.query("INSERT INTO EX_USER(USER_ID, USER_NO, USER_NAME, USER_EMAIL, USER_PHONE) VALUES($1, $2, $3, $4, $5)",
     [req.body.idUser, req.body.idNo, req.body.name, req.body.email, req.body.phone], function(err) {
       if (err) {
         console.error('could not insert data', err);
@@ -172,11 +167,11 @@ router.post('/api/v1/create/user', jsonParser, function(req, res) {
       }
     });
 
-    var query = client.query("SELECT * FROM EX_USER");
+    var query = client.query("SELECT * FROM EX_USER ORDER BY USER_NAME ASC");
     query.on('row', function(row) {
       results.push(row);
-    query.on('end', function() {
     });
+    query.on('end', function() {
       done();
       return res.json(results);
     });
@@ -193,7 +188,7 @@ router.put('/api/v1/update/user', function(req, res) {
       return res.status(500).send(json({success: false, error: err}));
     }
 
-    client.query("UPDATE EX_USER SET EX_ID_NO=($2), EX_NAME=($3), EX_EMAIL=($4), EX_PHONE=($5) WHERE EX_ID_USER=($1)",
+    client.query("UPDATE EX_USER SET USER_NO=($2), USER_NAME=($3), USER_EMAIL=($4), USER_PHONE=($5) WHERE USER_ID=($1)",
     [req.body.idUser, req.body.idNo, req.body.name, req.body.email, req.body.phone], function(err) {
       if (err) {
         done();
@@ -202,7 +197,7 @@ router.put('/api/v1/update/user', function(req, res) {
       }
     });
 
-    var query = client.query("SELECT * FROM EX_USER");
+    var query = client.query("SELECT * FROM EX_USER ORDER BY USER_NAME ASC");
     query.on('row', function(row) {
       results.push(row);
     });
@@ -224,13 +219,13 @@ router.delete('/api/v1/delete/user/:ex_id_user', function(req, res) {
       return res.status(500).json({success: false, error: err});
     }
 
-    client.query("DELETE FROM EX_USER WHERE EX_ID_USER=($1)", [id], function(err) {
+    client.query("DELETE FROM EX_USER WHERE USER_ID=($1)", [id], function(err) {
       if (err) {
         console.error('delete data failed', err);
         return res.status(500).json({success: false, errpr: err});
       }
 
-      var query = client.query("SELECT * FROM EX_USER");
+      var query = client.query("SELECT * FROM EX_USER ORDER BY USER_NAME ASC");
       query.on('row', function(row) {
         results.push(row);
       });
