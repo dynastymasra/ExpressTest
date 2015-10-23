@@ -30,7 +30,7 @@ router.get('/api/v1/read/todo', function(req, res) {
 
     query.on('end', function() {
       done();
-      return res.json(results);
+      return res.status(200).json(results);
     });
   });
 });
@@ -49,7 +49,7 @@ router.post('/api/v1/create/todo', jsonParser, function(req, res) {
     [req.body.id, req.body.title, req.body.description, req.body.status], function(err) {
       if (err) {
         console.error('could not insert data', err);
-        return res.json({success: false, error: err});
+        return res.status(500).json({success: false, error: err});
       }
     });
 
@@ -59,12 +59,12 @@ router.post('/api/v1/create/todo', jsonParser, function(req, res) {
     });
     query.on('end', function() {
       done();
-      return res.json(results);
+      return res.status(200).json(results);
     });
   });
 });
 
-router.put('/api/v1/update', function(req, res) {
+router.put('/api/v1/update/todo', function(req, res) {
   var results = [];
 
   pg.connect(connectionString, function(err, client, done) {
@@ -83,13 +83,13 @@ router.put('/api/v1/update', function(req, res) {
       }
     });
 
-    var query = client.query("SELECT * FROM EX_PRAC ORDER BY PRAC_TITLE ASC");
+    var query = client.query("SELECT * FROM EX_PRAC WHERE PRAC_ID=($1) ORDER BY PRAC_TITLE ASC", [req.body.id]);
     query.on('row', function(row) {
       results.push(row);
     });
     query.on('end', function() {
       done();
-      return res.json(results);
+      return res.status(200).json(results);
     });
   });
 });
@@ -144,7 +144,7 @@ router.get('/api/v1/read/user', function(req, res) {
 
     query.on('end', function() {
       done();
-      return res.json(results);
+      return res.status(200).json(results);
     });
   });
 });

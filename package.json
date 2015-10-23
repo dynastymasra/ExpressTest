@@ -16,6 +16,9 @@
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
-    "mocha": "^2.3.3"
+    "frisby": "^0.8.5",
+    "mocha": "^2.3.3",
+    "should": "^7.1.1",
+    "supertest": "^1.1.0"
   }
 }
