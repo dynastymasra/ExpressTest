@@ -42,17 +42,32 @@ describe('Test API PUT', function() {
   var todo = {"id": 1234567890, "title": "Update", "desc": "Update", "status": "Done"}
   var user = {"idUser": 1234567890, "idNo":"Update", "name":"Update", "email":"Update", "phone":"Update"}
 
-  it('POST API todo update data', function(done) {
+  it('PUT API todo update data', function(done) {
     server.put('/api/v1/update/todo').send(todo).expect("Content-type", /json/).expect(200).end(function(err, res) {
       res.status.should.equal(200)
       done()
     })
   })
 
-  it('POST API user update data', function(done) {
+  it('PUT API user update data', function(done) {
     server.put('/api/v1/update/user').send(user).expect("Content-type", /json/).expect(200).end(function(err, res) {
       done()
+    })
+  })
+})
+
+describe('Test API DELETE', function() {
+  it('DELETE API todo delete data', function(done) {
+    server.delete('/api/v1/delete/todo/1234567890').expect("Content-type", /json/).expect(200).end(function(err, res) {
       res.status.should.equal(200)
+      done()
+    })
+  })
+
+  it('DELETE API user delete data', function(done) {
+    server.delete('/api/v1/delete/user/1234567890').expect("Content-type", /json/).expect(200).end(function(err, res) {
+      res.status.should.equal(200)
+      done()
     })
   })
 })
