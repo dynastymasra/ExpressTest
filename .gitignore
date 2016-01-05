@@ -77,9 +77,14 @@ gen-external-apklibs
 ############
 # log file #
 ############
+logs
 *.log
+npm-debug.log*
 
 ########
 # node #
 ########
 npm-debug.log
+node_modules
+build/Release
+.lock-wscript
